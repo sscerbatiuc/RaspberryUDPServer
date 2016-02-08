@@ -1,6 +1,5 @@
 package udp.server;
 
-import udp.helper.Constants;
 import udp.helper.TimeHelper;
 import udp.io.JsonService;
 import udp.io.LoggerService;
@@ -25,6 +24,7 @@ public class Application {
                     System.out.println(TimeHelper.getCurrentTime() + ": Received Message -> " + receivedMessage.toString());
                     if (loggerService != null) {
                         loggerService.writeToFile(receivedMessage + "\n");
+                        jsonService.writeToJson(Message.parse(receivedMessage));
                     } else {
                         System.out.println(TimeHelper.getCurrentTime() + ": ERROR -> There was an error writing to log file");
                     }

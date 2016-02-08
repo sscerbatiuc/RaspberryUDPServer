@@ -22,9 +22,9 @@ public class FileHelper {
 
         String currentHomeDir = System.getProperty("user.home");
         Path filePath = Paths.get(currentHomeDir.concat(fileDirectory));
-        if(Files.notExists(filePath)){
-            Files.createDirectories(filePath.getParent());
-            Files.createFile(filePath);
+        if(Files.notExists(filePath)){                      // Check if the path exists
+            Files.createDirectories(filePath.getParent());  //Create folder
+            Files.createFile(filePath);                     //Create file
         }
         return filePath.toString();
     }

@@ -6,6 +6,9 @@ import udp.helper.FileHelper;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Logs all the information that is being generated
@@ -53,21 +56,32 @@ public class LoggerService implements Recordable {
 
     //-------------------------------------------------------
 
-    public String readFromFile(String filePath) {
-        //TODO - implement reading from text log file
+    /**
+     * Reads all the content of the file and returns it as a <code>String</code>
+     * @param filePathString String representing the path to the actual file
+     * @return String
+     */
+    public String readFromFile(String filePathString) {
+        try {
+            Path filePath = Paths.get(filePathString);
+            String fileContent =  new String(Files.readAllBytes(filePath));
+            return fileContent;
+        } catch (Exception ex) {
+
+        }
         return null;
     }
 
     /**
      * Writes the specified message to the log <code>File</code>
-     * @param msg
-     * @return
+     * @param message String
+     * @return boolean - true - success; false - failure
      */
-    public boolean writeToFile(String msg) {
+    public boolean writeToFile(String message) {
 
         try{
             FileWriter logFileWriter = new FileWriter(this.getLogFile(), Constants.APPEND_TEXT);
-            logFileWriter.write(msg.toString());
+            logFileWriter.write(message.toString());
             logFileWriter.flush();
             logFileWriter.close();
             return true;

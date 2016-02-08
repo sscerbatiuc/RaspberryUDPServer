@@ -1,14 +1,18 @@
 package udp.io;
 
-import com.google.gson.JsonObject;
 import udp.helper.Constants;
 import udp.helper.FileHelper;
 import udp.helper.TimeHelper;
 import udp.protocol.Message;
+import com.google.gson.JsonObject;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Handles the operation of recording all the received messages
@@ -71,12 +75,24 @@ public class JsonService implements Recordable {
      * @return
      */
     public String readFromFile(String filePath) {
-        //TODO - implement JSON reading
+        //TODO - test reading from JSON
+        try {
+            Path file = Paths.get(filePath);
+            String jsonString = new String(Files.readAllBytes(file));
+            ObjectMapper jsonMapper = new ObjectMapper();
+            List<Message> messages = jsonMapper.readValue(jsonString, new TypeReference<List<Message>>(){});
+
+        } catch (FileNotFoundException ex) {
+            System.out.println("FileNotFound Exception in JsonService Class - Method: readFromFile()");
+
+        } catch (IOException ex) {
+            System.out.println("IOException Exception in JsonService Class - Method: readFromFile()");
+        }
         return null;
     }
 
     /**
-     * Writes the JSON to file
+     * Writes the message to the
      * @param message Message
      * @return boolean <code>true</code> - success;
      *                 <code>false</code> - failure
@@ -98,7 +114,7 @@ public class JsonService implements Recordable {
 
     /**
      * Appends a message to the existing JSON log file
-     * @param message String
+     * @param message String - JSON format
      * @return <code>true</code> in case of success;
      *         <code>false</code> in case of error
      */
@@ -108,8 +124,9 @@ public class JsonService implements Recordable {
             JsonObject object = new JsonObject();
             this.fileWriter = new FileWriter(this.getJsonFile(),Constants.APPEND_TEXT);
             object.addProperty("time:", TimeHelper.getCurrentTime());
+            object.addProperty("heartbeat", (message.isHeartbeat() == true ? "no":"yes"));
             object.addProperty("lightSensor: ", (message.getLightSensorVal() == Constants.SENSOR_OFF ? "off" : "on"));
-            object.addProperty("pirSensor: ",(message.getPirSensorVal() == false ? "off" : "on"));
+            object.addProperty("pirSensor: ",(message.getPirSensorVal() == Constants.SENSOR_OFF ? "off" : "on"));
             fileWriter.write(object.toString());
             fileWriter.flush();
             fileWriter.close();

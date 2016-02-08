@@ -2,58 +2,34 @@ package udp.protocol;
 
 public class Message {
 
-    private boolean isHardBit;
+    private boolean isHeartbeat;
     private String timeReceived;
 
     private int lightSensorVal;
-    private boolean pirSensorVal;
+    private int pirSensorVal;
 
     // ---------------- GETTERS & SETTERS --------------------
 
-    public void setPirSensorVal(boolean pirSensorVal) {
+    public void setPirSensorVal(int pirSensorVal) { this.pirSensorVal = pirSensorVal; }
 
-        this.pirSensorVal = pirSensorVal;
-    }
+    public void setLightSensorVal(int lightSensorVal) { this.lightSensorVal = lightSensorVal; }
 
-    public void setLightSensorVal(int lightSensorVal) {
+    public void setTimeReceived(String timeReceived) { this.timeReceived = timeReceived; }
 
-        this.lightSensorVal = lightSensorVal;
-    }
+    public void setHeartbeat(boolean heartbeat) { isHeartbeat = heartbeat; }
 
-    public void setTimeReceived(String timeReceived) {
+    public int getPirSensorVal() { return pirSensorVal; }
 
-        this.timeReceived = timeReceived;
-    }
+    public int getLightSensorVal() { return lightSensorVal; }
 
-    public void setHardBit(boolean hardBit) {
+    public String getTimeReceived() { return timeReceived; }
 
-        isHardBit = hardBit;
-    }
-
-    public boolean getPirSensorVal() {
-
-        return pirSensorVal;
-    }
-
-    public int getLightSensorVal() {
-
-        return lightSensorVal;
-    }
-
-    public String getTimeReceived() {
-
-        return timeReceived;
-    }
-
-    public boolean isHardBit() {
-
-        return isHardBit;
-    }
+    public boolean isHeartbeat() { return isHeartbeat; }
 
     // -------------------------------------------------------
 
     /**
-     * Constructor without parameters
+     * Default CONTRUCTOR
      */
     public Message(){
 
@@ -61,15 +37,15 @@ public class Message {
 
     /**
      * CONSTRUCTOR
-     * @param isHardBit boolean - Specifies if it is a control message from Arduino
+     * @param isHeartbeat boolean - Specifies if it is a control message from Arduino
      * @param pirSensorVal boolean - Value indicated by the PIR Sensor can be either 1 (movement present) or 0 (no movement)
      * @param lightSensorVal
      * @param timeReceived
      */
-    public Message(boolean isHardBit, boolean pirSensorVal, int lightSensorVal, String timeReceived) {
+    public Message(boolean isHeartbeat, int pirSensorVal, int lightSensorVal, String timeReceived) {
 
         this.timeReceived = timeReceived;
-        this.isHardBit = isHardBit;
+        this.isHeartbeat = isHeartbeat;
         this.pirSensorVal = pirSensorVal;
         this.lightSensorVal = lightSensorVal;
     }
@@ -87,11 +63,32 @@ public class Message {
     }
 
 
+    /**
+     * Parses the textual representation of a message received from
+     * Arduino board into a <code>Message</code> object
+     * @param data <code>String</code>
+     * @return <code>Message</code>
+     */
     public static Message parse(String data){
 
-        String[] splitMessage = data.split("|");
+        String[] splitMessage = data.split("[|]");
         Message message = new Message();
-
+        message.setHeartbeat(false);
+        for (String info:splitMessage) {
+            String[] tmp = info.split(" ");
+            if(tmp[0].toUpperCase().startsWith("P")){
+                int pirSensorValue = Integer.parseInt(tmp[1]);
+                message.setPirSensorVal(pirSensorValue);
+            }
+            if (tmp[0].toUpperCase().startsWith("L")) {
+                int lightSensorValue = Integer.parseInt(tmp[1]);
+                message.setLightSensorVal(lightSensorValue);
+            }
+            if (tmp[0].toUpperCase().startsWith("H")) {
+                int isHeartbeatMessage = Integer.parseInt(tmp[1]);
+                message.setHeartbeat(true);
+            }
+        }
         return message;
 
     }

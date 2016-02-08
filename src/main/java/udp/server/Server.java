@@ -105,7 +105,7 @@ public class Server {
             System.out.println("Received data: " + receivedString);
             String[] splitMessage = receivedString.split("|");
             Message receivedMessage = new Message(false,
-                    Boolean.parseBoolean(splitMessage[1]),
+                    Integer.parseInt(splitMessage[1]),
                     Integer.parseInt(splitMessage[3]),
                     TimeHelper.getCurrentTime());
 
