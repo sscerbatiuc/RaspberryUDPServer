@@ -2,35 +2,40 @@ package udp.io;
 
 import com.google.gson.JsonObject;
 import udp.helper.Constants;
+import udp.helper.FileHelper;
 import udp.helper.TimeHelper;
 import udp.protocol.Message;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
 /**
- * Handles I/O operations for a JSON file
+ * Handles the operation of recording all the received messages
+ * to a JSON file. This file is used for mapping the received
+ * messages information to the <code>Message</code> object itself.
  */
 public class JsonService implements Recordable {
 
-    private static JsonService instance;
-    private String filePath;
-    public static final boolean APPEND_TEXT = true;
 
-    private JsonObject object;
+
+    private static JsonService instance;
+
+    private String     filePath;
+    private File       jsonFile;
     private FileWriter fileWriter;
 
 
 
     // --------------- GETTERS & SETTERS ---------------
 
-    public JsonObject getObject() {
-        return object;
-    }
+    public String getFilePath() { return filePath; }
 
-    public void setObject(JsonObject object) {
-        this.object = object;
-    }
+    public void setFilePath(String filePath) { this.filePath = filePath; }
+
+    public File getJsonFile() { return jsonFile; }
+
+    public void setJsonFile(File jsonFile) {  this.jsonFile = jsonFile;  }
 
     //----------------- INITIALISATION ------------------
     /**
@@ -38,18 +43,20 @@ public class JsonService implements Recordable {
      * @param jsonFilePath String
      */
     private JsonService(String jsonFilePath) throws IOException{
-        this.filePath = jsonFilePath;
+
+        this.setFilePath(FileHelper.parseFilePath(jsonFilePath));
+        this.setJsonFile(new File(this.getFilePath()));
 
     }
 
     /**
      * SINGLETON METHOD
-     * @return
+     * @return JsonService
      * @throws IOException
      */
     public static JsonService getInstance(){
         try {
-            if(instance == null) { instance = new JsonService(Constants.LOCAL_JSON_LOG_FILE_PATH);}
+            if(instance == null) { instance = new JsonService(Constants.JSON_FILE_PATH);}
             return instance;
         } catch (IOException ex) {
 
@@ -63,7 +70,7 @@ public class JsonService implements Recordable {
      * @param filePath
      * @return
      */
-    public String readFromJson(String filePath) {
+    public String readFromFile(String filePath) {
         //TODO - implement JSON reading
         return null;
     }
@@ -74,16 +81,11 @@ public class JsonService implements Recordable {
      * @return boolean <code>true</code> - success;
      *                 <code>false</code> - failure
      */
-    public boolean writeToJson(Message message){
-
+    public boolean writeToFile(String message){
         try {
-            //TODO - test object instantiation
-            object = new JsonObject();
-            this.fileWriter = new FileWriter(filePath, APPEND_TEXT);
-            object.addProperty("time:", TimeHelper.getCurrentTime());
-            object.addProperty("lightSensor: ", (message.getLightSensor() == Constants.SENSOR_OFF ? "off" : "on"));
-            object.addProperty("pirSensor: ",(message.getPirSensorVal() == Constants.SENSOR_OFF ? "off" : "on"));
-            fileWriter.write(object.toString());
+
+            this.fileWriter = new FileWriter(filePath, Constants.APPEND_TEXT);
+            fileWriter.write(message);
             fileWriter.flush();
             fileWriter.close();
             return true;
@@ -93,4 +95,31 @@ public class JsonService implements Recordable {
             return false;
         }
     }
+
+    /**
+     * Appends a message to the existing JSON log file
+     * @param message String
+     * @return <code>true</code> in case of success;
+     *         <code>false</code> in case of error
+     */
+    public boolean writeToJson(Message message){
+
+        try {
+            JsonObject object = new JsonObject();
+            this.fileWriter = new FileWriter(this.getJsonFile(),Constants.APPEND_TEXT);
+            object.addProperty("time:", TimeHelper.getCurrentTime());
+            object.addProperty("lightSensor: ", (message.getLightSensorVal() == Constants.SENSOR_OFF ? "off" : "on"));
+            object.addProperty("pirSensor: ",(message.getPirSensorVal() == false ? "off" : "on"));
+            fileWriter.write(object.toString());
+            fileWriter.flush();
+            fileWriter.close();
+            return true;
+
+        } catch (IOException exception) {
+
+            return false;
+        }
+
+    }
+
 }

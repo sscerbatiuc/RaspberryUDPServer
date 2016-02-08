@@ -1,0 +1,31 @@
+package udp.helper;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+/**
+ * Contains static methods used for manipulating files and files' paths
+ */
+public class FileHelper {
+
+    /**
+     * Concatenates the current user home directory path with the
+     * indicated directory path, in which the file will be stored.
+     * If the obtained path does not exist, this method creates
+     * the whole path to the file
+     * @param fileDirectory String
+     * @return String
+     */
+    public static String parseFilePath(String fileDirectory) throws IOException {
+
+        String currentHomeDir = System.getProperty("user.home");
+        Path filePath = Paths.get(currentHomeDir.concat(fileDirectory));
+        if(Files.notExists(filePath)){
+            Files.createDirectories(filePath.getParent());
+            Files.createFile(filePath);
+        }
+        return filePath.toString();
+    }
+}

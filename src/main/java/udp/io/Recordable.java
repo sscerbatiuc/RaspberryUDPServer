@@ -1,13 +1,12 @@
 package udp.io;
 
-import udp.protocol.Message;
-
 /**
- * Created by stas on 2/5/16.
+ * Defines the methods for recording and reading information
+ * to/from files
  */
 public interface Recordable {
 
-    public String readFromJson(String filePath);
-    public boolean writeToJson(Message msg);
+    public String readFromFile(String filePath);
+    public boolean writeToFile(String msg);
 
 }

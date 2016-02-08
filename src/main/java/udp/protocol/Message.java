@@ -2,44 +2,76 @@ package udp.protocol;
 
 public class Message {
 
-    private String time;
-    private int lightSensor;
-    private int pirSensorVal;
+    private boolean isHardBit;
+    private String timeReceived;
+
+    private int lightSensorVal;
+    private boolean pirSensorVal;
 
     // ---------------- GETTERS & SETTERS --------------------
 
-    public void setPirSensorVal(int pirSensorVal) {  this.pirSensorVal = pirSensorVal;  }
+    public void setPirSensorVal(boolean pirSensorVal) {
 
-    public void setLightSensor(int lightSensor) { this.lightSensor = lightSensor;  }
-
-    public void setTime(String time) {
-        this.time = time;
+        this.pirSensorVal = pirSensorVal;
     }
 
-    public int getPirSensorVal() {
+    public void setLightSensorVal(int lightSensorVal) {
+
+        this.lightSensorVal = lightSensorVal;
+    }
+
+    public void setTimeReceived(String timeReceived) {
+
+        this.timeReceived = timeReceived;
+    }
+
+    public void setHardBit(boolean hardBit) {
+
+        isHardBit = hardBit;
+    }
+
+    public boolean getPirSensorVal() {
+
         return pirSensorVal;
     }
 
-    public int getLightSensor() {
-        return lightSensor;
+    public int getLightSensorVal() {
+
+        return lightSensorVal;
     }
 
-    public String getTime() {
-        return time;
+    public String getTimeReceived() {
+
+        return timeReceived;
+    }
+
+    public boolean isHardBit() {
+
+        return isHardBit;
     }
 
     // -------------------------------------------------------
 
     /**
+     * Constructor without parameters
+     */
+    public Message(){
+
+    }
+
+    /**
      * CONSTRUCTOR
-     * @param pirSensorVal
+     * @param isHardBit boolean - Specifies if it is a control message from Arduino
+     * @param pirSensorVal boolean - Value indicated by the PIR Sensor can be either 1 (movement present) or 0 (no movement)
      * @param lightSensorVal
      * @param timeReceived
      */
-    public Message(int pirSensorVal, int lightSensorVal, String timeReceived) {
+    public Message(boolean isHardBit, boolean pirSensorVal, int lightSensorVal, String timeReceived) {
+
+        this.timeReceived = timeReceived;
+        this.isHardBit = isHardBit;
         this.pirSensorVal = pirSensorVal;
-        this.lightSensor = lightSensorVal;
-        this.time = timeReceived;
+        this.lightSensorVal = lightSensorVal;
     }
 
     /**
@@ -50,8 +82,18 @@ public class Message {
     public String toString() {
         return "Message{" +
                 "pirSensorVal=" + pirSensorVal +
-                ", lightSensor=" + lightSensor +
-                ", time='" + time + '\'' +
-                '}';
+                ", lightSensorVal=" + lightSensorVal +
+                ", timeReceived='" + timeReceived + '}';
     }
+
+
+    public static Message parse(String data){
+
+        String[] splitMessage = data.split("|");
+        Message message = new Message();
+
+        return message;
+
+    }
+
 }

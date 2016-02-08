@@ -1,7 +1,9 @@
 package udp.server;
 
+import udp.helper.Constants;
 import udp.helper.TimeHelper;
 import udp.io.JsonService;
+import udp.io.LoggerService;
 import udp.protocol.Message;
 
 import java.io.IOException;
@@ -14,24 +16,23 @@ public class Application {
         try {
             Server udpServer = Server.getInstance();
             JsonService jsonService = JsonService.getInstance();
-            System.out.println("Server Started...OK");
+            LoggerService loggerService = LoggerService.getInstance();
+            System.out.println(TimeHelper.getCurrentTime() + ": Server Started...OK");
+            loggerService.writeToFile("\n" + TimeHelper.getCurrentTime() + ": OK -> SERVER STARTED SUCCESSFULLY \n");
             while(true){
-                Message receivedMessage = udpServer.receiveData();
+                String receivedMessage = udpServer.receiveString();
                 if(receivedMessage != null){
-                    System.out.println("Received Message: " + receivedMessage.toString());
-                    if (jsonService != null) {
-                        jsonService.writeToJson(receivedMessage);
-//                        System.out.println(TimeHelper.getCurrentTime() + ": OK -> The message has been written to json file");
+                    System.out.println(TimeHelper.getCurrentTime() + ": Received Message -> " + receivedMessage.toString());
+                    if (loggerService != null) {
+                        loggerService.writeToFile(receivedMessage + "\n");
                     } else {
-//                        System.out.println(TimeHelper.getCurrentTime() + ": ERROR -> There was an error writing to log file");
+                        System.out.println(TimeHelper.getCurrentTime() + ": ERROR -> There was an error writing to log file");
                     }
                 }
             }
         } catch (IOException ex) {
             System.out.println(TimeHelper.getCurrentTime() + ": ERROR (Application.java) " + ex.getMessage());
-
         }
-
         }
 
 } // END OF CLASS

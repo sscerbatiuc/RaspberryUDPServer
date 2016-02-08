@@ -1,5 +1,6 @@
 package udp.server;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -13,38 +14,50 @@ public class Server {
 
     private static Server instance;
 
-    private DatagramSocket serverSocket;
+    private byte[] tempBuffer;
+    private final short bufferLength = 512;
+
     private byte[] receivedData;
     private byte[] responseData;
+    private DatagramSocket serverSocket;
+    private ByteArrayOutputStream byteArrayOutStr;
+
 
     // --------------- GETTERS & SETTERS ---------------
 
+
+    public void setTempBuffer(byte[] tempBuffer) {  this.tempBuffer = tempBuffer;  }
+
     public static void setInstance(Server instance) {
         Server.instance = instance;
-    }
-
-    public DatagramSocket getServerSocket() {
-        return serverSocket;
     }
 
     public void setServerSocket(DatagramSocket serverSocket) {
         this.serverSocket = serverSocket;
     }
 
-    public byte[] getReceivedData() {
-        return receivedData;
-    }
-
     public void setReceivedData(byte[] receivedData) {
         this.receivedData = receivedData;
+    }
+
+    public void setResponseData(byte[] responseData) {
+        this.responseData = responseData;
+    }
+
+    public byte[] getTempBuffer() {  return tempBuffer;  }
+
+    public short getBufferLength() {  return bufferLength; }
+
+    public byte[] getReceivedData() {
+        return receivedData;
     }
 
     public byte[] getResponseData() {
         return responseData;
     }
 
-    public void setResponseData(byte[] responseData) {
-        this.responseData = responseData;
+    public DatagramSocket getServerSocket() {
+        return serverSocket;
     }
 
     // -------------------------------------------
@@ -53,10 +66,10 @@ public class Server {
      */
     private Server() throws SocketException {
 
-        System.out.println("Server Constructor");
-            serverSocket = new DatagramSocket(Constants.SERVER_PORT);
-            receivedData = new byte[100];
-            responseData = new byte[100];
+        serverSocket = new DatagramSocket(Constants.SERVER_PORT);
+        byteArrayOutStr = new ByteArrayOutputStream();
+//        receivedData = new byte[100];
+//        responseData = new byte[100];
 
     }
 
@@ -81,16 +94,44 @@ public class Server {
      */
     public Message receiveData(){
         try {
-            DatagramPacket receivedPacket = new DatagramPacket(receivedData, receivedData.length);
+            this.setTempBuffer(new byte[this.getBufferLength()]);
+            DatagramPacket receivedPacket = new DatagramPacket(this.getTempBuffer(), this.getBufferLength());
             serverSocket.receive(receivedPacket);
-            String receivedString = new String(receivedPacket.getData());
+
+            this.receivedData = new byte[receivedPacket.getLength()];       //Initialise array for received data
+            System.arraycopy(receivedPacket.getData(), receivedPacket.getOffset(), this.getReceivedData(), 0, receivedPacket.getLength());
+
+            String receivedString = new String(this.getReceivedData());
             System.out.println("Received data: " + receivedString);
             String[] splitMessage = receivedString.split("|");
-            Message receivedMessage = new Message(Integer.parseInt(splitMessage[1]),
+            Message receivedMessage = new Message(false,
+                    Boolean.parseBoolean(splitMessage[1]),
                     Integer.parseInt(splitMessage[3]),
                     TimeHelper.getCurrentTime());
 
             return receivedMessage;
+
+        } catch (IOException ioEx) {
+            return null;
+        }
+    }
+
+    /**
+     * Displays the string received from the client
+     * @return String; null - in case of error
+     */
+    public String receiveString(){
+        try {
+            this.setTempBuffer(new byte[this.getBufferLength()]);
+            DatagramPacket receivedPacket = new DatagramPacket(this.getTempBuffer(), this.getBufferLength());
+            serverSocket.receive(receivedPacket);
+
+            this.receivedData = new byte[receivedPacket.getLength()];       //Initialise array for received data
+            System.arraycopy(receivedPacket.getData(), receivedPacket.getOffset(), this.getReceivedData(), 0, receivedPacket.getLength());
+
+            String receivedString = new String(this.getReceivedData());
+            System.out.println("Received string: " + receivedString);
+            return receivedString;
 
         } catch (IOException ioEx) {
             return null;

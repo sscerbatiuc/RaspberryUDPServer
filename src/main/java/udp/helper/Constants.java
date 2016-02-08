@@ -1,12 +1,18 @@
 package udp.helper;
 
 /**
- * Created by stas on 2/5/16.
+ * This class contains the
  */
 public class Constants {
 
     //----------- LOG FILE CONSTANTS ------------------
-    public final static String LOCAL_JSON_LOG_FILE_PATH = "/home/pi/log.json";
+    // These paths are appended to the current user home directory
+    public final static String JSON_FILE_PATH = "/Desktop/Arduino/messages.json";
+    public final static String TXT_LOG_FILE_PATH = "/Desktop/Arduino/log.txt";
+
+    //----------- FileWriter CONSTANTS ---------------
+    public static final boolean APPEND_TEXT = true;
+    public static final boolean OVERWRITE_TEXT = false;
 
     // ---------- SERVER CONSTANTS --------------------
     public static final int SERVER_PORT;
@@ -19,7 +25,7 @@ public class Constants {
     static {
         SENSOR_ON    = 1;
         SENSOR_OFF   = 0;
-        SERVER_PORT      = 9876;
+        SERVER_PORT  = 9876;
     }
 
 }
