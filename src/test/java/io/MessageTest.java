@@ -35,40 +35,5 @@ public class MessageTest {
         Message msg6 = Message.parse(messageString6);
         Message msg7 = Message.parse(messageString7);
 
-        // testing msg object 1
-        assertEquals(false ,msg1.isHeartbeat());
-        assertEquals(0, msg1.getLightSensorVal());
-        assertEquals(0, msg1.getPirSensorVal());
-
-        // testing msg object 2
-        assertEquals(false ,msg2.isHeartbeat());
-        assertEquals(0, msg2.getLightSensorVal());
-        assertEquals(1, msg2.getPirSensorVal());
-
-        // testing msg object 3
-        assertEquals(false ,msg3.isHeartbeat());
-        assertEquals(1, msg3.getLightSensorVal());
-        assertEquals(0, msg3.getPirSensorVal());
-
-        // testing msg object 4
-        assertEquals(true ,msg4.isHeartbeat());
-        assertEquals(0, msg4.getLightSensorVal());
-        assertEquals(0, msg4.getPirSensorVal());
-
-        // testing msg object 5
-        assertEquals(true ,msg5.isHeartbeat());
-        assertEquals(0, msg5.getLightSensorVal());
-        assertEquals(1, msg5.getPirSensorVal());
-
-        // testing msg object 6
-        assertEquals(true ,msg6.isHeartbeat());
-        assertEquals(1, msg6.getLightSensorVal());
-        assertEquals(0, msg6.getPirSensorVal());
-
-        // testing msg object 7
-        assertEquals(true ,msg7.isHeartbeat());
-        assertEquals(1, msg7.getLightSensorVal());
-        assertEquals(1, msg7.getPirSensorVal());
-
     }
 }
