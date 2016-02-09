@@ -1,13 +1,14 @@
 package udp.helper;
 
 /**
- * This class contains the
+ * This class contains the constants for specific operations
+ * in the application
  */
 public class Constants {
 
     //----------- LOG FILE CONSTANTS ------------------
     // These paths are appended to the current user home directory
-    public final static String JSON_FILE_PATH    = "/Desktop/Arduino/messages.json";
+    public final static String JSON_FILE_PATH    = "/Desktop/Arduino/messages.io";
     public final static String TXT_LOG_FILE_PATH = "/Desktop/Arduino/log.txt";
 
     //----------- FileWriter CONSTANTS ---------------

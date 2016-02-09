@@ -2,7 +2,10 @@ package udp.helper;
 
 import java.util.Calendar;
 
-
+/**
+ * Contains static methods for time manipulation operations
+ * @author sscerbatiuc
+ */
 public class TimeHelper {
 
     /**

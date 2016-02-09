@@ -1,7 +1,7 @@
 package udp.helper;
 
 /**
- * Created by stas on 2/5/16.
+ * @author sscerbatiuc
  */
 public class ClassHelper {
 

@@ -1,6 +1,5 @@
 package udp.server;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -10,6 +9,11 @@ import java.net.SocketException;
 import udp.protocol.Message;
 import udp.helper.*;
 
+/**
+ * Contains all the methods related to the Server and Client side
+ * communication.
+ * @author sscerbatiuc
+ */
 public class Server {
 
     private static Server instance;
@@ -20,7 +24,6 @@ public class Server {
     private byte[] receivedData;
     private byte[] responseData;
     private DatagramSocket serverSocket;
-    private ByteArrayOutputStream byteArrayOutStr;
 
 
     // --------------- GETTERS & SETTERS ---------------
@@ -66,10 +69,7 @@ public class Server {
      */
     private Server() throws SocketException {
 
-        serverSocket = new DatagramSocket(Constants.SERVER_PORT);
-        byteArrayOutStr = new ByteArrayOutputStream();
-//        receivedData = new byte[100];
-//        responseData = new byte[100];
+        this.setServerSocket(new DatagramSocket(Constants.SERVER_PORT));
 
     }
 
@@ -87,21 +87,15 @@ public class Server {
     }
 
     /**
-     * Receives the data <code>DatagramPacket</code> from the client
+     * Receives the data <code>DatagramPacket</code> from the client,
+     * parses the textual representation of the data and creates
      * and extracts the textual representation of the data
      * in the packet
      * @return
      */
-    public Message receiveData(){
+    public Message readMessage(){
         try {
-            this.setTempBuffer(new byte[this.getBufferLength()]);
-            DatagramPacket receivedPacket = new DatagramPacket(this.getTempBuffer(), this.getBufferLength());
-            serverSocket.receive(receivedPacket);
-
-            this.receivedData = new byte[receivedPacket.getLength()];       //Initialise array for received data
-            System.arraycopy(receivedPacket.getData(), receivedPacket.getOffset(), this.getReceivedData(), 0, receivedPacket.getLength());
-
-            String receivedString = new String(this.getReceivedData());
+            String receivedString = this.readString();
             System.out.println("Received data: " + receivedString);
             String[] splitMessage = receivedString.split("|");
             Message receivedMessage = new Message(false,
@@ -111,16 +105,16 @@ public class Server {
 
             return receivedMessage;
 
-        } catch (IOException ioEx) {
+        } catch (Exception ex) {
             return null;
         }
     }
 
     /**
-     * Displays the string received from the client
+     * Receives the String from the client
      * @return String; null - in case of error
      */
-    public String receiveString(){
+    public String readString(){
         try {
             this.setTempBuffer(new byte[this.getBufferLength()]);
             DatagramPacket receivedPacket = new DatagramPacket(this.getTempBuffer(), this.getBufferLength());

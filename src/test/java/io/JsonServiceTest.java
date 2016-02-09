@@ -1,8 +1,7 @@
-package json;
+package io;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
-import udp.helper.Constants;
 import udp.io.JsonService;
 
 
@@ -14,7 +13,7 @@ public class JsonServiceTest {
     @Test
     public void testJsonFilePath(){
 
-        String correctPath = "/home/stas/Desktop/log.json";
+        String correctPath = "/home/stas/Desktop/Arduino/messages.io";
         JsonService jsonService = JsonService.getInstance();
         assertEquals(correctPath, jsonService.getFilePath());
     }

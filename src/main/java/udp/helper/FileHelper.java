@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 
 /**
  * Contains static methods used for manipulating files and files' paths
+ * @author sscerbatiuc
  */
 public class FileHelper {
 

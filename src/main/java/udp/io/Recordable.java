@@ -3,6 +3,7 @@ package udp.io;
 /**
  * Defines the methods for recording and reading information
  * to/from files
+ * @author sscerbatiuc
  */
 public interface Recordable {
 

@@ -11,7 +11,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * Logs all the information that is being generated
+ * Logs all the information that is being generated.
+ * This class is used for registering all the events in
+ * a text log file.
+ * @author sscerbatiuc
  */
 public class LoggerService implements Recordable {
 

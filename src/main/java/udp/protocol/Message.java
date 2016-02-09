@@ -1,5 +1,10 @@
 package udp.protocol;
 
+/**
+ * Encapsulates the information that is being transmitted between client
+ * and server side.
+ * @author sscerbatiuc
+ */
 public class Message {
 
     private boolean isHeartbeat;
@@ -29,7 +34,7 @@ public class Message {
     // -------------------------------------------------------
 
     /**
-     * Default CONTRUCTOR
+     * Default CONSTRUCTOR
      */
     public Message(){
 
@@ -57,11 +62,12 @@ public class Message {
      */
     public String toString() {
         return "Message{" +
-                "pirSensorVal=" + pirSensorVal +
+                "isHeartbeat=" + isHeartbeat +
+                ", timeReceived='" + timeReceived + '\'' +
                 ", lightSensorVal=" + lightSensorVal +
-                ", timeReceived='" + timeReceived + '}';
+                ", pirSensorVal=" + pirSensorVal +
+                '}';
     }
-
 
     /**
      * Parses the textual representation of a message received from

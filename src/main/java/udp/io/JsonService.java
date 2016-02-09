@@ -18,6 +18,7 @@ import java.nio.file.Paths;
  * Handles the operation of recording all the received messages
  * to a JSON file. This file is used for mapping the received
  * messages information to the <code>Message</code> object itself.
+ * @author sscerbatiuc
  */
 public class JsonService implements Recordable {
 

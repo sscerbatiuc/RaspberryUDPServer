@@ -7,6 +7,10 @@ import udp.protocol.Message;
 
 import java.io.IOException;
 
+/**
+ * The application main method
+ * @author sscerbatiuc
+ */
 public class Application {
 
 
@@ -19,7 +23,7 @@ public class Application {
             System.out.println(TimeHelper.getCurrentTime() + ": Server Started...OK");
             loggerService.writeToFile("\n" + TimeHelper.getCurrentTime() + ": OK -> SERVER STARTED SUCCESSFULLY \n");
             while(true){
-                String receivedMessage = udpServer.receiveString();
+                String receivedMessage = udpServer.readString();
                 if(receivedMessage != null){
                     System.out.println(TimeHelper.getCurrentTime() + ": Received Message -> " + receivedMessage.toString());
                     if (loggerService != null) {
